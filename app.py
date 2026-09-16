@@ -105,7 +105,7 @@ def webhook():
 
         reply = (
             "👋 <b>XIZMAT HUB buyurtma botiga xush kelibsiz!</b>\n\n"
-            "Kerakli xizmatni xizmithub.uz saytidan tanlang "
+            "Kerakli xizmatni xizmathub.uz saytidan tanlang "
             "va “Buyurtma berish” tugmasini bosing."
         )
 
