@@ -62,7 +62,9 @@ def webhook():
 
     chat_id = chat.get("id")
     text = (msg.get("text") or "").strip()
-
+if text == '/myid':
+    send_message(chat_id, f'🆔 Sizning Chat ID: <code>{chat_id}</code>')
+    return 'ok', 200
     if not chat_id:
         return "ok", 200
 
