@@ -40,7 +40,6 @@ def setup_webhook():
             json={"url": WEBHOOK_URL},
             timeout=15
         )
-
         print("Telegram webhook:", response.text)
 
     except Exception as e:
@@ -54,7 +53,6 @@ def health():
 
 @app.post("/webhook")
 def webhook():
-
     data = request.get_json(silent=True) or {}
 
     msg = data.get("message") or {}
@@ -62,10 +60,16 @@ def webhook():
 
     chat_id = chat.get("id")
     text = (msg.get("text") or "").strip()
-if text == '/myid':
-    send_message(chat_id, f'🆔 Sizning Chat ID: <code>{chat_id}</code>')
-    return 'ok', 200
+
     if not chat_id:
+        return "ok", 200
+
+    # Admin Chat ID ni olish
+    if text == "/myid":
+        send_message(
+            chat_id,
+            f"🆔 Sizning Chat ID: <code>{chat_id}</code>"
+        )
         return "ok", 200
 
     service = None
@@ -93,7 +97,6 @@ if text == '/myid':
     }
 
     if service:
-
         safe_service = html.escape(service)
 
         reply = (
@@ -104,7 +107,6 @@ if text == '/myid':
         )
 
     else:
-
         reply = (
             "👋 <b>XIZMAT HUB buyurtma botiga xush kelibsiz!</b>\n\n"
             "Kerakli xizmatni xizmathub.uz saytidan tanlang "
@@ -120,10 +122,5 @@ setup_webhook()
 
 
 if __name__ == "__main__":
-
     port = int(os.environ.get("PORT", "10000"))
-
-    app.run(
-        host="0.0.0.0",
-        port=port
-    )
+    app.run(host="0.0.0.0", port=port)
