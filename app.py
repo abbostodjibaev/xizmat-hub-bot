@@ -15,12 +15,12 @@ WEBHOOK_URL = os.environ.get(
 ).strip()
 
 BASE = f"https://api.telegram.org/bot{TOKEN}"
-SITE = "https://xizmithub.uz/assets"
+ASSETS_DIR = os.path.join(os.path.dirname(__file__), "assets")
 
 SERVICES = {
     "resume": {
         "title": "Resume / CV tayyorlash",
-        "photo": f"{SITE}/a_clean_modern_advertising_poster_social_media_b.png",
+        "photo": "a_clean_modern_advertising_poster_social_media_b.png",
         "price": "69 000 so‘m",
         "text": """<b>Resume / CV tayyorlash</b>
 
@@ -60,7 +60,7 @@ Agar ish tajribasi bo‘lmasa ham Resume tayyorlash mumkin.
     },
     "icloud": {
         "title": "iCloud / Apple ID ochish",
-        "photo": f"{SITE}/a_clean_modern_advertising_poster_social_media_b.png",
+        "photo": "a_clean_modern_advertising_poster_social_media_b.png",
         "price": "59 000 so‘m",
         "text": """<b>iCloud / Apple ID ochish</b>
 
@@ -83,7 +83,7 @@ Xavfsizlik uchun iCloud uchun alohida yangi e-mail ochish tavsiya etiladi. Asosi
     },
     "online_form": {
         "title": "Onlayn forma yaratish",
-        "photo": f"{SITE}/a_polished_commercial_advertising_poster_graphic.png",
+        "photo": "a_polished_commercial_advertising_poster_graphic.png",
         "price": "69 000 so‘m",
         "text": """<b>Onlayn forma yaratish</b>
 
@@ -113,7 +113,7 @@ Asosiy shaxsiy pochta o‘rniga alohida ishchi e-mail ishlatish tavsiya etiladi.
     },
     "insurance": {
         "title": "Majburiy avto sug‘urta",
-        "photo": f"{SITE}/a_clean_graphic_advertisement_poster_design_squar.png",
+        "photo": "a_clean_graphic_advertisement_poster_design_squar.png",
         "price": "Xizmat haqi: 20 000 so‘m",
         "text": """<b>Majburiy avto sug‘urta</b>
 
@@ -129,7 +129,7 @@ Asosiy shaxsiy pochta o‘rniga alohida ishchi e-mail ishlatish tavsiya etiladi.
     },
     "job_application": {
         "title": "Online ishga ariza topshirish",
-        "photo": f"{SITE}/a_bold_commercial_advertisement_poster_social_me.png",
+        "photo": "a_bold_commercial_advertisement_poster_social_me.png",
         "price": "79 000 so‘m",
         "text": """<b>Online ishga ariza topshirish</b>
 
@@ -160,7 +160,7 @@ Mijoz avval admin bilan bog‘lanadi. Qaysi davlat va qaysi ish ekaniga qarab ta
     },
     "airport_job": {
         "title": "Aeroportga ishga ariza",
-        "photo": f"{SITE}/a_polished_promotional_graphic_design_social_med.png",
+        "photo": "a_polished_promotional_graphic_design_social_med.png",
         "price": "79 000 so‘m",
         "text": """<b>Aeroportga ishga ariza</b>
 
@@ -201,7 +201,7 @@ Asosiy shaxsiy e-mailingizni bermang. Ariza uchun alohida e-mail ochish tavsiya 
     },
     "presentation": {
         "title": "Prezentatsiya tayyorlash",
-        "photo": f"{SITE}/a_polished_modern_promotional_poster_ad_layout_in.png",
+        "photo": "a_polished_modern_promotional_poster_ad_layout_in.png",
         "price": "59 000 so‘mdan",
         "text": """<b>Prezentatsiya tayyorlash</b>
 
@@ -222,7 +222,7 @@ Ishda, o‘qishda yoki taqdimot uchun matn, rasm va infografikalar asosida profe
     },
     "vinetka": {
         "title": "Vinetka tayyorlash",
-        "photo": f"{SITE}/a_clean_modern_commercial_graphic_ad_poster_flye.png",
+        "photo": "a_clean_modern_commercial_graphic_ad_poster_flye.png",
         "price": "199 000 so‘mdan",
         "text": """<b>Vinetka tayyorlash</b>
 
@@ -246,7 +246,7 @@ Mijoz rasmlarni yuboradi, biz ularni Photoshop’da sayqalab, professional dizay
     },
     "invitation_certificate": {
         "title": "Online taklifnoma + sertifikat/diplom dizayni",
-        "photo": f"{SITE}/a_clean_high_contrast_promotional_graphic_poster.png",
+        "photo": "a_clean_high_contrast_promotional_graphic_poster.png",
         "price": "79 000 so‘mdan",
         "text": """<b>Online taklifnoma + sertifikat/diplom dizayni</b>
 
@@ -272,7 +272,7 @@ Faqat qonuniy, dekorativ yoki tadbir uchun dizayn tayyorlanadi. Rasmiy davlat hu
     },
     "trademark": {
         "title": "Brendni patentlash / tovar belgisini ro‘yxatdan o‘tkazish",
-        "photo": f"{SITE}/a_sleek_high_contrast_promotional_poster_advertis.png",
+        "photo": "a_sleek_high_contrast_promotional_poster_advertis.png",
         "price": "999 000 so‘mdan",
         "text": """<b>Brendni patentlash / tovar belgisini ro‘yxatdan o‘tkazish</b>
 
@@ -302,7 +302,7 @@ Davlat bojlari alohida to‘lanadi.
     },
     "maps": {
         "title": "Google Xarita / Yandex Xarita",
-        "photo": f"{SITE}/a_glossy_high_contrast_advertising_poster_flyer_i.png",
+        "photo": "a_glossy_high_contrast_advertising_poster_flyer_i.png",
         "price": "Google: 399 000 so‘m | Yandex: 599 000 so‘m",
         "text": """<b>Google Xarita / Yandex Xarita’ga biznes joylash</b>
 
@@ -332,7 +332,7 @@ Google yoki Yandex tomonidan tekshiruv/moderatsiya bo‘lishi mumkin. Yakuniy ta
     },
     "website_bot": {
         "title": "Sayt yaratish + Telegram bot",
-        "photo": f"{SITE}/a_polished_dark_themed_marketing_poster_banner_i.png",
+        "photo": "a_polished_dark_themed_marketing_poster_banner_i.png",
         "price": "Vazifaga qarab",
         "text": """<b>Sayt yaratish + Telegram bot</b>
 
@@ -360,7 +360,7 @@ Google yoki Yandex tomonidan tekshiruv/moderatsiya bo‘lishi mumkin. Yakuniy ta
     },
     "target": {
         "title": "Professional Target reklama",
-        "photo": f"{SITE}/a_dark_glossy_professional_marketing_ad_poster_i.png",
+        "photo": "a_dark_glossy_professional_marketing_ad_poster_i.png",
         "price": "Maqsad va hajmga qarab",
         "text": """<b>Professional Target reklama</b>
 
@@ -388,7 +388,7 @@ Meta reklama budjeti xizmat haqidan alohida to‘lanadi. Natija bozor, taklif, b
     },
     "search_ads": {
         "title": "Google Search + Yandex qidiruv reklamasi",
-        "photo": f"{SITE}/a_high_contrast_professional_digital_advertisemen.png",
+        "photo": "a_high_contrast_professional_digital_advertisemen.png",
         "price": "Vazifa va budjetga qarab",
         "text": """<b>Google Search + Yandex qidiruv reklamasi</b>
 
@@ -414,7 +414,7 @@ Google/Yandex reklama budjeti xizmat haqidan alohida to‘lanadi. Natija budjet,
     },
     "virtual_number": {
         "title": "Virtual raqamlar",
-        "photo": f"{SITE}/a_polished_high_contrast_promotional_graphic_post.png",
+        "photo": "a_polished_high_contrast_promotional_graphic_post.png",
         "price": "Davlat va raqam turiga qarab",
         "text": """<b>Virtual raqamlar</b>
 
@@ -436,7 +436,7 @@ Har bir platforma virtual raqamlarni qabul qilish qoidalarini o‘zi belgilaydi.
     },
     "hhuz": {
         "title": "HH.UZ profil / anketa",
-        "photo": f"{SITE}/a_polished_commercial_infographic_ad_banner_with_a.png",
+        "photo": "a_polished_commercial_infographic_ad_banner_with_a.png",
         "price": "49 000 so‘m",
         "text": """<b>HH.UZ profil / anketa</b>
 
@@ -471,7 +471,7 @@ Profil va arizani tayyorlab beramiz, lekin ishga qabul qilish bo‘yicha yakuniy
     },
     "logo_design": {
         "title": "Logo va grafik dizayn",
-        "photo": f"{SITE}/a_clean_modern_promotional_poster_ad_layout_g.png",
+        "photo": "a_clean_modern_promotional_poster_ad_layout_g.png",
         "price": "Vazifaga qarab",
         "text": """<b>Logo va grafik dizayn xizmati</b>
 
@@ -551,8 +551,24 @@ def send_message(chat_id, text, reply_markup=None):
         payload["reply_markup"] = reply_markup
     return api_post("sendMessage", payload)
 
-def send_photo(chat_id, photo_url):
-    return api_post("sendPhoto", {"chat_id": chat_id, "photo": photo_url})
+def send_photo(chat_id, photo_name):
+    photo_path = os.path.join(ASSETS_DIR, photo_name)
+    if not os.path.exists(photo_path):
+        print("PHOTO FILE NOT FOUND:", photo_path)
+        return None
+    try:
+        with open(photo_path, "rb") as photo_file:
+            r = requests.post(
+                f"{BASE}/sendPhoto",
+                data={"chat_id": chat_id},
+                files={"photo": photo_file},
+                timeout=30,
+            )
+        print("sendPhoto", r.status_code, r.text[:500])
+        return r
+    except Exception as e:
+        print("sendPhoto ERROR:", e)
+        return None
 
 def admin_keyboard():
     return {
