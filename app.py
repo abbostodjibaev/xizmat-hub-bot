@@ -635,7 +635,7 @@ def webhook():
             send_message(
                 chat_id,
                 "👋 <b>XIZMAT HUB buyurtma botiga xush kelibsiz!</b>\n\n"
-                "Kerakli xizmatni <b>xizmithub.uz</b> saytidan tanlang va "
+                "Kerakli xizmatni <b>xizmathub.uz</b> saytidan tanlang va "
                 "“Buyurtma berish” tugmasini bosing.",
                 admin_keyboard(),
             )
@@ -643,7 +643,7 @@ def webhook():
 
     send_message(
         chat_id,
-        "Kerakli xizmatni <b>xizmithub.uz</b> saytidan tanlab, "
+        "Kerakli xizmatni <b>xizmathub.uz</b> saytidan tanlab, "
         "“Buyurtma berish” tugmasini bosing.",
         admin_keyboard(),
     )
