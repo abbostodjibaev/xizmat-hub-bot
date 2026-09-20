@@ -15,8 +15,7 @@ WEBHOOK_URL = os.environ.get(
 ).strip()
 
 BASE = f"https://api.telegram.org/bot{TOKEN}"
-ASSETS_DIR = os.path.join(os.path.dirname(__file__), "assets")
-
+ASSETS_DIR = os.path.dirname(__file__)
 SERVICES = {
     "resume": {
         "title": "Resume / CV tayyorlash",
