@@ -1,6 +1,7 @@
 
 import os
 import html
+import re
 from flask import Flask, request
 import requests
 
@@ -815,9 +816,7 @@ def webhook():
         else:
             send_message(
                 chat_id,
-                "👋 <b>XIZMAT HUB buyurtma botiga xush kelibsiz!</b>
-
-"
+                "👋 <b>XIZMAT HUB buyurtma botiga xush kelibsiz!</b>\n\n"
                 "Kerakli xizmatni <b>xizmathub.uz</b> saytidan tanlang va "
                 "“Buyurtma berish” tugmasini bosing.",
                 admin_keyboard(),
