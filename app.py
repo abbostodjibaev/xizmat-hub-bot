@@ -14,8 +14,11 @@ WEBHOOK_URL = os.environ.get(
     "https://xizmat-hub-bot.onrender.com/webhook"
 ).strip()
 
+CRM_URL = "https://script.google.com/macros/s/AKfycbyqmy4uPxBIVnFfAO0KkBXV2uhNhFn_n8P2T8Au8cHWC_JpqQWrH68nAHcppWU_q70/exec"
+
 BASE = f"https://api.telegram.org/bot{TOKEN}"
 ASSETS_DIR = os.path.dirname(__file__)
+
 SERVICES = {
     "resume": {
         "title": "Resume / CV tayyorlash",
@@ -583,6 +586,36 @@ def normalize_service(raw):
     slug = ALIASES.get(slug, slug)
     return slug if slug in SERVICES else None
 
+
+def send_to_crm(msg, service):
+    """Yangi buyurtmani Google Sheets CRM ga yuboradi."""
+    if not CRM_URL or not service:
+        return
+
+    try:
+        user = msg.get("from") or {}
+        user_id = user.get("id")
+        username = user.get("username")
+        first_name = user.get("first_name") or ""
+        last_name = user.get("last_name") or ""
+        full_name = (first_name + " " + last_name).strip() or "Mijoz"
+
+        telegram = f"@{username}" if username else str(user_id or "")
+        s = SERVICES.get(service, {})
+
+        payload = {
+            "mijoz": full_name,
+            "telegram": telegram,
+            "xizmat": s.get("title", service),
+            "narx": s.get("price", "")
+        }
+
+        r = requests.post(CRM_URL, json=payload, timeout=20)
+        print("CRM:", r.status_code, r.text[:500])
+
+    except Exception as e:
+        print("CRM ERROR:", e)
+
 def notify_admin(msg, service):
     if not ADMIN_CHAT_ID or not service:
         return
@@ -630,6 +663,7 @@ def webhook():
         service = normalize_service(parts[1]) if len(parts) == 2 else None
         if service:
             notify_admin(msg, service)
+            send_to_crm(msg, service)
             send_service(chat_id, service)
         else:
             send_message(
