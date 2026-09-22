@@ -16,6 +16,9 @@ WEBHOOK_URL = os.environ.get(
 
 CRM_URL = "https://script.google.com/macros/s/AKfycbyqmy4uPxBIVnFfAO0KkBXV2uhNhFn_n8P2T8Au8cHWC_JpqQWrH68nAHcppWU_q70/exec"
 
+PAYMENT_CARD = os.environ.get("PAYMENT_CARD", "").strip()
+PAYMENT_NAME = os.environ.get("PAYMENT_NAME", "").strip()
+
 BASE = f"https://api.telegram.org/bot{TOKEN}"
 ASSETS_DIR = os.path.dirname(__file__)
 
@@ -616,6 +619,123 @@ def send_to_crm(msg, service):
     except Exception as e:
         print("CRM ERROR:", e)
 
+
+DURATION_BY_SERVICE = {
+    "trademark": "Hujjatlarni tayyorlash va topshirish odatda 1–2 kun ichida amalga oshiriladi. Rasmiy ekspertiza va ro‘yxatdan o‘tkazish jarayoni 7 oygacha davom etishi mumkin.",
+    "website_bot": "Sayt va Telegram bot tayyorlash muddati vazifa hajmiga qarab 1 haftagacha.",
+    "presentation": "Prezentatsiya slaydlar soni va murakkabligiga qarab odatda 2–3 kun.",
+    "maps": "Google/Yandex Xarita bo‘yicha jarayon platforma tekshiruvi sabab 14 kungacha davom etishi mumkin.",
+    "vinetka": "Vinetka tayyorlash muddati odatda 5–10 kun.",
+    "target": "Professional Target xizmati uchrashuv va shartnoma asosida kelishiladi. Muddat loyiha hajmi va reklama rejasiga qarab belgilanadi.",
+}
+
+GENERIC_DURATION = "Ko‘pchilik xizmatlar ma’lumotlar to‘liq bo‘lsa odatda 1–2 kun ichida bajariladi. Ayrim holatlarda bundan tezroq yoki texnik sabablar tufayli biroz kechroq bo‘lishi mumkin."
+
+FIRST_REPLY_TEXT = """Assalomu alaykum. XIZMAT HUB’ga murojaat qilganingiz uchun rahmat. Buyurtmangizni ko‘rib chiqdik. Kerakli ma’lumotlarni yuborsangiz, xizmatni boshlaymiz."""
+
+IN_PROGRESS_TEXT = """✅ Buyurtmangiz qabul qilindi va hozir jarayonda. Tayyor bo‘lgach sizga xabar beramiz."""
+
+READY_TEXT = """✅ Buyurtmangiz tayyor. Iltimos, tekshirib ko‘ring. Qo‘shimcha savol yoki o‘zgartirish bo‘lsa, yozishingiz mumkin."""
+
+MORE_INFO_TEXT = """📎 Buyurtmani davom ettirish uchun qo‘shimcha ma’lumot yoki hujjat kerak. Iltimos, yetishmayotgan ma’lumotlarni yuboring."""
+
+DELAY_TEXT = """⏳ Buyurtmangiz ustida ish davom etmoqda. Texnik yoki tashqi servisga bog‘liq sabab bilan biroz kechikish bo‘lishi mumkin. Tayyor bo‘lishi bilan sizga xabar beramiz."""
+
+def extract_requirements(service):
+    s = SERVICES.get(service, {})
+    text = s.get("text", "")
+
+    # Aeroport xizmatida talablar + anketa savollari birga kerak.
+    if service == "airport_job":
+        cleaned = re.sub(r"<[^>]+>", "", text)
+        cleaned = cleaned.replace("💳 To‘lov oldindan amalga oshiriladi.", "").strip()
+        return cleaned
+
+    # "Talab qilinadi:" bo‘limini keyingi sarlavhagacha ajratib olamiz.
+    m = re.search(
+        r"<b>Talab qilinadi:</b>\s*(.*?)(?=\n\s*<b>|\Z)",
+        text,
+        flags=re.S
+    )
+    if m:
+        requirements = re.sub(r"<[^>]+>", "", m.group(1)).strip()
+        if requirements:
+            return requirements
+
+    # Talablar sarlavhasi bo‘lmasa, xizmat matnidan xavfsiz qisqa fallback.
+    cleaned = re.sub(r"<[^>]+>", "", text)
+    cleaned = cleaned.replace("💳 To‘lov oldindan amalga oshiriladi.", "").strip()
+    return cleaned
+
+def payment_template():
+    if PAYMENT_CARD and PAYMENT_NAME:
+        return (
+            "💳 <b>To‘lov ma’lumotlari</b>\n\n"
+            "Buyurtmani boshlash uchun to‘lov oldindan amalga oshiriladi.\n\n"
+            f"<b>Karta raqami:</b> <code>{html.escape(PAYMENT_CARD)}</code>\n"
+            f"<b>Karta egasi:</b> {html.escape(PAYMENT_NAME)}\n\n"
+            "To‘lovdan keyin chek yoki screenshot yuboring.\n"
+            "To‘lov tasdiqlangach buyurtmangiz ishga olinadi."
+        )
+    return (
+        "💳 <b>To‘lov ma’lumotlari</b>\n\n"
+        "PAYMENT_CARD va PAYMENT_NAME Render Environment Variables’da kiritilmagan."
+    )
+
+def template_text(action, service):
+    s = SERVICES.get(service, {})
+    title = s.get("title", service)
+
+    if action == "first":
+        return FIRST_REPLY_TEXT
+    if action == "requirements":
+        req = extract_requirements(service)
+        return f"📋 <b>{html.escape(title)} uchun kerakli ma’lumotlar:</b>\n\n{html.escape(req)}"
+    if action == "payment":
+        return payment_template()
+    if action == "duration":
+        duration = DURATION_BY_SERVICE.get(service, GENERIC_DURATION)
+        return f"⏱ <b>Xizmat muddati</b>\n\n{html.escape(duration)}"
+    if action == "progress":
+        return IN_PROGRESS_TEXT
+    if action == "ready":
+        return READY_TEXT
+    if action == "more":
+        return MORE_INFO_TEXT
+    if action == "delay":
+        return DELAY_TEXT
+    return "Shablon topilmadi."
+
+def admin_template_keyboard(service):
+    return {
+        "inline_keyboard": [
+            [
+                {"text": "👋 Birinchi javob", "callback_data": f"tpl|first|{service}"},
+                {"text": "📋 Talablar", "callback_data": f"tpl|requirements|{service}"}
+            ],
+            [
+                {"text": "💳 To‘lov", "callback_data": f"tpl|payment|{service}"},
+                {"text": "⏱ Muddat", "callback_data": f"tpl|duration|{service}"}
+            ],
+            [
+                {"text": "🔄 Jarayonda", "callback_data": f"tpl|progress|{service}"},
+                {"text": "✅ Tayyor", "callback_data": f"tpl|ready|{service}"}
+            ],
+            [
+                {"text": "📎 Qo‘shimcha ma’lumot", "callback_data": f"tpl|more|{service}"},
+                {"text": "⏳ Kechikish", "callback_data": f"tpl|delay|{service}"}
+            ]
+        ]
+    }
+
+def answer_callback(callback_id, text="Tayyor shablon chiqarildi ✅"):
+    return api_post("answerCallbackQuery", {
+        "callback_query_id": callback_id,
+        "text": text,
+        "show_alert": False
+    })
+
+
 def notify_admin(msg, service):
     if not ADMIN_CHAT_ID or not service:
         return
@@ -631,7 +751,7 @@ def notify_admin(msg, service):
         f"👤 Mijoz: {contact}\n"
         f"🆔 Telegram ID: <code>{user_id}</code>"
     )
-    send_message(ADMIN_CHAT_ID, text)
+    send_message(ADMIN_CHAT_ID, text, admin_template_keyboard(service))
 
 def send_service(chat_id, service):
     s = SERVICES[service]
@@ -646,6 +766,33 @@ def health():
 @app.post("/webhook")
 def webhook():
     data = request.get_json(silent=True) or {}
+
+    # Admin shablon tugmalarini bosganda.
+    callback = data.get("callback_query") or {}
+    if callback:
+        callback_id = callback.get("id")
+        callback_data = callback.get("data") or ""
+        from_user = callback.get("from") or {}
+
+        # Faqat admin chatidan foydalanish uchun tekshiruv.
+        if ADMIN_CHAT_ID and str(from_user.get("id")) != str(ADMIN_CHAT_ID):
+            if callback_id:
+                answer_callback(callback_id, "Bu tugmalar admin uchun.")
+            return "ok", 200
+
+        parts = callback_data.split("|")
+        if len(parts) == 3 and parts[0] == "tpl":
+            _, action, service = parts
+            if service in SERVICES:
+                text = template_text(action, service)
+                send_message(ADMIN_CHAT_ID, text)
+                if callback_id:
+                    answer_callback(callback_id)
+            else:
+                if callback_id:
+                    answer_callback(callback_id, "Xizmat topilmadi.")
+        return "ok", 200
+
     msg = data.get("message") or {}
     chat = msg.get("chat") or {}
     chat_id = chat.get("id")
@@ -668,7 +815,9 @@ def webhook():
         else:
             send_message(
                 chat_id,
-                "👋 <b>XIZMAT HUB buyurtma botiga xush kelibsiz!</b>\n\n"
+                "👋 <b>XIZMAT HUB buyurtma botiga xush kelibsiz!</b>
+
+"
                 "Kerakli xizmatni <b>xizmathub.uz</b> saytidan tanlang va "
                 "“Buyurtma berish” tugmasini bosing.",
                 admin_keyboard(),
