@@ -503,7 +503,35 @@ Profil va arizani tayyorlab beramiz, lekin ishga qabul qilish bo‘yicha yakuniy
 
 <b>💳 To‘lov oldindan amalga oshiriladi.</b>"""
     },
+
+    "telegram_ads": {
+        "title": "Telegram Ads",
+        "photo": "telegram_ads.png",
+        "price": "1 399 000 so‘m",
+        "text": """<b>📢 TELEGRAM ADS</b>
+
+Telegram kanal, bot yoki loyihangizni katta va mos auditoriyaga ega kanallarda reklama qilamiz.
+
+<b>Nima uchun kerak?</b>
+Kanal yoki loyihangizni katta auditoriyaga olib chiqish, yangi obunachilar va mijozlarni jalb qilish uchun kerak.
+
+<b>Xizmat ichiga kiradi:</b>
+• Mos reklama kanallarini tanlash
+• Auditoriya va yo‘nalishni hisobga olish
+• Reklama joylashuvini kelishish
+• Reklama matni bo‘yicha tavsiya
+• Reklama budjeti va joylashtirish
+
+<b>⏳ Muddat:</b> 3 kun
+
+<b>Muhim:</b>
+Reklama budjeti 1 399 000 so‘mlik xizmat narxi ichiga kiradi.
+Reklama natijasi kanal sifati, auditoriya faolligi va joylashuvga qarab farq qilishi mumkin.
+
+<b>💳 To‘lov oldindan amalga oshiriladi.</b>"""
+    },
 }
+
 
 ALIASES = {
     "cv": "resume",
@@ -535,6 +563,9 @@ ALIASES = {
     "hh_uz": "hhuz",
     "design": "logo_design",
     "logo": "logo_design",
+    "telegram_ads": "telegram_ads",
+    "tg_ads": "telegram_ads",
+    "telegramad": "telegram_ads",
 }
 
 def api_post(method, payload):
@@ -628,6 +659,7 @@ DURATION_BY_SERVICE = {
     "maps": "Google/Yandex Xarita bo‘yicha jarayon platforma tekshiruvi sabab 14 kungacha davom etishi mumkin.",
     "vinetka": "Vinetka tayyorlash muddati odatda 5–10 kun.",
     "target": "Professional Target xizmati uchrashuv va shartnoma asosida kelishiladi. Muddat loyiha hajmi va reklama rejasiga qarab belgilanadi.",
+    "telegram_ads": "Telegram Ads xizmati muddati 3 kun.",
 }
 
 GENERIC_DURATION = "Ko‘pchilik xizmatlar ma’lumotlar to‘liq bo‘lsa odatda 1–2 kun ichida bajariladi. Ayrim holatlarda bundan tezroq yoki texnik sabablar tufayli biroz kechroq bo‘lishi mumkin."
